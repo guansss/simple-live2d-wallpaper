@@ -101,6 +101,9 @@ const config = {
         filename: '[name].[hash:4].js',
         path: path.resolve(__dirname, 'dist'),
     },
+    optimization: {
+        minimize: false,
+    },
 };
 
 module.exports = (env, argv) => {
