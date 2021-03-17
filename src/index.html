@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live2D Wallpaper</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-image: url("bg.png");
+            background-size: cover;
+            background-position: bottom;
+            background-repeat: no-repeat;
+        }
+
+        #canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        #message {
+            position: absolute;
+            display: none;
+            top: 0;
+            right: 0;
+            text-align: right;
+            font-size: 20px;
+            color: white;
+            background: rgba(0, 0, 0, .5);
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script src="live2d.min.js"></script>
+<script src="live2dcubismcore.min.js"></script>
+</body>
+</html>
