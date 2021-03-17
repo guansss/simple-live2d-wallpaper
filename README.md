@@ -87,6 +87,8 @@ a `WORKSHOP_ID` variable in the `.env.local` before building the project.
 WORKSHOP_ID=123456
 ```
 
+To build the project, run the command:
+
 ```shell
 # or `npm run build`
 yarn build
