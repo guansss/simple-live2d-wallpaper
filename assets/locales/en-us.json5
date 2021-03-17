@@ -1,0 +1,4 @@
+{
+  // translations begin with "ui_" will be used in project.json
+  "ui_info": "<font size=4>{NAME} v{VERSION}<font>"
+}

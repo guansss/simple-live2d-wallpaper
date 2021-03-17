@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            background: #333;
+            color: #EEE;
+        }
+
+        #message {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+            transform: translateY(-50%);
+        }
+    </style>
+</head>
+<body>
+<pre id="message">Waiting...</pre>
+
+<script>
+    const LOCAL_HOST = 'http://127.0.0.1:8080';
+
+    const localProps = {
+        userProps: undefined,
+        generalProps: undefined,
+        files: {},
+    };
+
+    // listen for properties initialization
+    // apparently the call order is: files -> user -> general
+    window.wallpaperPropertyListener = {
+        userDirectoryFilesAddedOrChanged(propName, files) {
+            localProps.files[propName] = files;
+            launch();
+        },
+
+        applyGeneralProperties(props) {
+            localProps.generalProps = props;
+            launch();
+        },
+
+        applyUserProperties(props) {
+            localProps.userProps = props;
+            launch();
+        },
+    };
+
+    function launch() {
+        display('Waiting for properties... ' +
+            [['user', localProps.userProps], ['general', localProps.generalProps], ['dirs', Object.keys(localProps.files).length]]
+                .map(([name, ok]) => `<b>${name}</b> ${ok ? '√' : 'X'}`).join('  '));
+
+        // launch when both props are set
+        if (localProps.userProps && localProps.generalProps) {
+            display('Sending properties...');
+
+            // transfer the properties to target location
+            // see `devServer` setup in "/vue.config.js"
+            fetch(LOCAL_HOST + '/props', {
+                method: 'POST',
+                body: JSON.stringify(localProps),
+                headers: { 'Content-Type': 'application/json' },
+            }).then(res => {
+                if (res.ok) {
+                    // add `redirect` parameter to notify the target location
+                    location.replace(LOCAL_HOST + '?redirect=1');
+                } else {
+                    res.text().then(text => {
+                        fail('Server responded with ' + res.status + '\n\n' + text);
+                    });
+                }
+            }).catch(e => fail(e + '\n\nHave you run `yarn serve` ?'));
+        }
+    }
+
+    function fail(e) {
+        display('Failed to send props to Webpack DevServer: \n\n' + e);
+    }
+
+    function display(message) {
+        document.getElementById('message').innerHTML += '\n' + message;
+    }
+
+    launch();
+</script>
+</body>
+</html>
